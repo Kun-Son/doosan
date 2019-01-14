@@ -1,0 +1,19 @@
+ pcd_in = Input(shape=(31,81,1), name='pcd')
+    conv1 = layers.Conv2D(16, 2)(pcd_in)
+    batch1 = layers.BatchNormalization()(conv1)
+    act1 = layers.Activation(activation='relu')(batch1)
+    pool1 = layers.MaxPooling2D((2, 2))(act1)
+    conv2 = layers.Conv2D(16, 2, activation='relu')(pool1)
+    flat1 = layers.Flatten()(conv2)
+    soft1 = layers.Dense(128, activation='softmax')(flat1)
+    dense1 = layers.Dense(64,activation='relu')(soft1)
+    dense2 = layers.Dense(32, activation='relu')(dense1)
+    answer = layers.Dense(3)(dense2)
+
+    final_model = Model(pcd_in, answer)
+
+    adam = Adam(lr=0.0002, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+    final_model.compile(optimizer =adam, loss='mse', metrics=['mae'])
+    print (final_model.summary())
+
+    return final_model
